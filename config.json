@@ -1,0 +1,9 @@
+{
+  "server": {
+      "name": "psg-app",
+      "port": 8000
+  },
+  "log": {
+    "level": "DEBUG"
+  }
+}

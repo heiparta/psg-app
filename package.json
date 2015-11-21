@@ -1,0 +1,32 @@
+{
+  "name": "psg-app",
+  "version": "0.1.0",
+  "author": "Heikki Partanen <heikki.partanen@gmail.com> (https://github.com/heiparta/)",
+  "description": "Frontend for PSG stats",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/heiparta/psg-app.git"
+  },
+  "dependencies": {
+    "bunyan": "^1.4.0",
+    "lodash": "^3.10.0",
+    "nodemon": "^1.3.7",
+    "restify": "^3.0.3"
+  },
+  "devDependencies": {
+    "blanket": "",
+    "chai": "",
+    "glob": "",
+    "mocha": "",
+    "prompt": "",
+    "should": "^7.0.2",
+    "sinon": "",
+    "source-map-support": ""
+  },
+  "license": "MIT",
+  "main": "./app.js",
+  "scripts": {
+    "test": "mocha -b test/*.js --reporter spec",
+    "start": "node ./app.js"
+  }
+}
