@@ -5,6 +5,8 @@ var React = require('react');
 var ReactDOM = require('react-dom');
 var router = require('react-router');
 
+var BarChart = require('react-chartjs').Bar;
+
 import { Router, Route, Link } from 'react-router'
 
 var PlayerStatsRow = React.createClass({
@@ -77,23 +79,47 @@ var Player = React.createClass({
 var PlayerListRow = React.createClass({
   render: function() {
     return (
-      <tr><th><Link to={"/player/" + this.props.name}>{this.props.name}</Link></th><td>{this.props.currentStreak}</td></tr>
+      <tr><th><Link to={"/player/" + this.props.name}>{this.props.name}</Link></th><td>{this.props.stats.currentStreak}</td></tr>
     );
   }
 });
 
 var PlayerList = React.createClass({
   render: function() {
-    var playerNodes = this.props.players.map(function (player) {
+    var data = {
+      labels: ["foo", "bar", "baz"],
+      datasets: [
+        {
+          fillColor: "rgba(188,187,205,0.5)",
+          data: [3, 4, 0],
+        },
+        {
+          fillColor: "rgba(188,187,205,0.5)",
+          data: [0, 0, -2],
+        },
+      ],
+    };
+    var chartOptions = {
+      //scaleBeginAtZero: false,
+      scaleStartValue: -20,
+    };
+    var rows = this.props.players.map(function (player) {
       return (
-        <PlayerListRow key={player.name} name={player.name} />
+        <PlayerListRow key={player.name} name={player.name} stats={player.stats} />
       );
     });
     return (
       <div className="container">
         <table className="table">
-          <tbody>{playerNodes}</tbody>
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Current streak</th>
+            </tr>
+          </thead>
+          <tbody>{rows}</tbody>
         </table>
+        <BarChart data={data} options={chartOptions} width="600" height="200" />
       </div>
     );
   }
@@ -160,11 +186,7 @@ var Series = React.createClass({
       dataType: 'json',
       cache: false,
       success: function (data) {
-        var players = [];
-        data.series.players.forEach(function (name) {
-          players.push({ name: name });
-        });
-        this.setState({ name: data.series.name, players: players });
+        this.setState({ name: data.series.name, players: data.series.players });
       }.bind(this),
       error: function (xhr, status, err) {
         console.error(xhr, status, err.toString());
