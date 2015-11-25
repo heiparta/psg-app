@@ -74,10 +74,10 @@ var Player = React.createClass({
   }
 });
 
-var PlayerRow = React.createClass({
+var PlayerListRow = React.createClass({
   render: function() {
     return (
-      <tr><td><Link to={"/player/" + this.props.name}>{this.props.name}</Link></td></tr>
+      <tr><th><Link to={"/player/" + this.props.name}>{this.props.name}</Link></th><td>{this.props.currentStreak}</td></tr>
     );
   }
 });
@@ -86,7 +86,7 @@ var PlayerList = React.createClass({
   render: function() {
     var playerNodes = this.props.players.map(function (player) {
       return (
-        <PlayerRow key={player} name={player} />
+        <PlayerListRow key={player.name} name={player.name} />
       );
     });
     return (
@@ -160,7 +160,11 @@ var Series = React.createClass({
       dataType: 'json',
       cache: false,
       success: function (data) {
-        this.setState({ name: data.series.name, players: data.series.players });
+        var players = [];
+        data.series.players.forEach(function (name) {
+          players.push({ name: name });
+        });
+        this.setState({ name: data.series.name, players: players });
       }.bind(this),
       error: function (xhr, status, err) {
         console.error(xhr, status, err.toString());
@@ -171,7 +175,6 @@ var Series = React.createClass({
       dataType: 'json',
       cache: false,
       success: function (data) {
-        console.log("DD", data.games[0].playersAway[0]);
         this.setState({ games: data.games });
       }.bind(this),
       error: function (xhr, status, err) {
@@ -206,12 +209,6 @@ var App = React.createClass({
   }
 })
 
-//ReactDOM.render(
-  //<Series url="http://localhost:8080/series/testseries" />,
-  //document.getElementById('content')
-//);
-
-
 ReactDOM.render((
   <Router>
     <Route path="/" component={App}>
@@ -220,6 +217,6 @@ ReactDOM.render((
     </Route>
   </Router>
 ), document.getElementById('content'))
-//), document.body)
+
 /*jshint ignore:end */
 
