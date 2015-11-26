@@ -253,14 +253,51 @@ var Series = React.createClass({
   }
 });
 
+var SeriesListRow = React.createClass({
+  render() {
+    return (
+        <li><Link to={"/series/" + this.props.name}>{this.props.name}</Link></li>
+    )
+  }
+});
+
+var SeriesList = React.createClass({
+  render() {
+    var rows = _.map(this.props.series, function (s) {
+      return (
+        <SeriesListRow key={s} name={s} />
+      )
+    });
+    return (
+        <ul>
+          {rows}
+        </ul>
+    )
+  }
+});
+
 var App = React.createClass({
+  getInitialState: function () {
+    return { series: [] };
+  },
+  componentDidMount: function () {
+    $.ajax({
+      url: "http://localhost:8080/series",
+      dataType: 'json',
+      cache: false,
+      success: function (data) {
+        this.setState({ series: data.series });
+      }.bind(this),
+      error: function (xhr, status, err) {
+        console.error(xhr, status, err.toString());
+      }.bind(this),
+    });
+  },
   render() {
     return (
       <div>
         <h1>PSG stats</h1>
-        <ul>
-          <li><Link to="/series/testseries">testseries</Link></li>
-        </ul>
+        <SeriesList series={this.state.series} />
 
         {this.props.children}
       </div>
