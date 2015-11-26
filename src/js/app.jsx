@@ -18,7 +18,7 @@ var PlayerStatsRow = React.createClass({
         <td>{this.props.stats.numberOfGames}</td>
         <td>{this.props.stats.numberOfWins}</td>
         <td>{numberOfLosses}</td>
-        <td>{this.props.stats.winPercentage}</td>
+        <td>{this.props.stats.winPercentage + " %"}</td>
         <td>{this.props.stats.currentStreak}</td>
       </tr>
     );
