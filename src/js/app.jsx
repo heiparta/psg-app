@@ -123,12 +123,13 @@ var PlayerStreakGraph = React.createClass({
 
 var PlayerListRow = React.createClass({
   render: function() {
+    var numberOfLosses = (this.props.stats.numberOfGames - this.props.stats.numberOfWins) || 0;
     return (
       <tr>
         <th><Link to={"/player/" + this.props.name}>{this.props.name}</Link></th>
         <td>{this.props.stats.numberOfGames}</td>
         <td>{this.props.stats.numberOfWins}</td>
-        <td>{this.props.stats.numberOfLosses}</td>
+        <td>{numberOfLosses}</td>
         <td>{this.props.stats.winPercentage + " %"}</td>
       </tr>
     );
