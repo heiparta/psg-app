@@ -3,9 +3,8 @@
 var _ = require('lodash');
 var React = require('react');
 var ReactDOM = require('react-dom');
-var router = require('react-router');
 
-var BarChart = require('react-chartjs').Bar;
+var Plotly = require('react-plotlyjs');
 
 import { Router, Route, Link } from 'react-router'
 
@@ -76,33 +75,73 @@ var Player = React.createClass({
   }
 });
 
+var PlayerStreakGraph = React.createClass({
+  render: function() {
+    var players = [
+      {name: "foo", stats: {currentStreak: -4}},
+      {name: "bar", stats: {currentStreak: 3}},
+      {name: "baz", stats: {currentStreak: 1}},
+    ];
+    var sortedPlayers = _.sortBy(players, 'stats.currentStreak');
+    var data = [
+        {
+          type: "bar",
+          y: _.map(sortedPlayers, function (p) {
+            return p.stats.currentStreak < 0 ? p.name : undefined;
+          }),
+          x: _.map(sortedPlayers, function (p) {
+            return p.stats.currentStreak < 0 ? p.stats.currentStreak : undefined;
+          }),
+          name: "Losing streak",
+          orientation: "h",
+          marker: {
+            color: "rgb(240, 20, 20)",
+          },
+        },
+        {
+          type: "bar",
+          y: _.map(sortedPlayers, function (p) {
+            return p.stats.currentStreak >= 0 ? p.name : undefined;
+          }),
+          x: _.map(sortedPlayers, function (p) {
+            return p.stats.currentStreak >= 0 ? p.stats.currentStreak : undefined;
+          }),
+          name: "Winning streak",
+          orientation: "h",
+          marker: {
+            color: "rgb(20, 240, 20)",
+          },
+        },
+    ];
+    var layout = {
+      showlegend: false,
+    };
+    var config = {
+      showLink: false,
+      displayModeBar: false,
+    };
+    return (
+      <Plotly className="streakGraph" data={data} layout={layout} config={config} />
+    );
+  }
+});
+
 var PlayerListRow = React.createClass({
   render: function() {
     return (
-      <tr><th><Link to={"/player/" + this.props.name}>{this.props.name}</Link></th><td>{this.props.stats.currentStreak}</td></tr>
+      <tr>
+        <th><Link to={"/player/" + this.props.name}>{this.props.name}</Link></th>
+        <td>{this.props.stats.numberOfGames}</td>
+        <td>{this.props.stats.numberOfWins}</td>
+        <td>{this.props.stats.numberOfLosses}</td>
+        <td>{this.props.stats.winPercentage + " %"}</td>
+      </tr>
     );
   }
 });
 
 var PlayerList = React.createClass({
   render: function() {
-    var data = {
-      labels: ["foo", "bar", "baz"],
-      datasets: [
-        {
-          fillColor: "rgba(188,187,205,0.5)",
-          data: [3, 4, 0],
-        },
-        {
-          fillColor: "rgba(188,187,205,0.5)",
-          data: [0, 0, -2],
-        },
-      ],
-    };
-    var chartOptions = {
-      //scaleBeginAtZero: false,
-      scaleStartValue: -20,
-    };
     var rows = this.props.players.map(function (player) {
       return (
         <PlayerListRow key={player.name} name={player.name} stats={player.stats} />
@@ -114,12 +153,15 @@ var PlayerList = React.createClass({
           <thead>
             <tr>
               <th>Name</th>
-              <th>Current streak</th>
+              <th>Games</th>
+              <th>Wins</th>
+              <th>Losses</th>
+              <th>Winning percentage</th>
             </tr>
           </thead>
           <tbody>{rows}</tbody>
         </table>
-        <BarChart data={data} options={chartOptions} width="600" height="200" />
+        <PlayerStreakGraph />
       </div>
     );
   }
