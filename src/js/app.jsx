@@ -77,12 +77,7 @@ var Player = React.createClass({
 
 var PlayerStreakGraph = React.createClass({
   render: function() {
-    var players = [
-      {name: "foo", stats: {currentStreak: -4}},
-      {name: "bar", stats: {currentStreak: 3}},
-      {name: "baz", stats: {currentStreak: 1}},
-    ];
-    var sortedPlayers = _.sortBy(players, 'stats.currentStreak');
+    var sortedPlayers = _.sortBy(this.props.players, 'stats.currentStreak');
     var data = [
         {
           type: "bar",
@@ -161,7 +156,7 @@ var PlayerList = React.createClass({
           </thead>
           <tbody>{rows}</tbody>
         </table>
-        <PlayerStreakGraph />
+        <PlayerStreakGraph players={this.props.players} />
       </div>
     );
   }
