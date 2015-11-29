@@ -4,10 +4,10 @@ COPY . /app
 
 RUN cd /app; npm install; npm install -g nodemon
 
-VOLUME /app/config.json
+RUN cd /app; ./node_modules/.bin/gulp js
 
-EXPOSE 80
+EXPOSE 8000
 
 WORKDIR /app
-CMD ["nodemon", "app.js"]
+CMD ["nodemon", "server.js"]
 
