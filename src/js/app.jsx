@@ -54,7 +54,7 @@ var Player = React.createClass({
   },
   componentDidMount: function () {
     $.ajax({
-      url: "http://localhost:8080/player/" + this.props.params.name,
+      url: PSG_API_URL + "/player/" + this.props.params.name,
       dataType: 'json',
       cache: false,
       success: function (data) {
@@ -220,7 +220,7 @@ var Series = React.createClass({
   },
   componentDidMount: function () {
     $.ajax({
-      url: "http://localhost:8080/series/" + this.props.params.name,
+      url: PSG_API_URL + "/series/" + this.props.params.name,
       dataType: 'json',
       cache: false,
       success: function (data) {
@@ -231,7 +231,7 @@ var Series = React.createClass({
       }.bind(this),
     });
     $.ajax({
-      url: "http://localhost:8080/series/" + this.props.params.name + "/games",
+      url: PSG_API_URL + "/series/" + this.props.params.name + "/games",
       dataType: 'json',
       cache: false,
       success: function (data) {
@@ -283,7 +283,7 @@ var App = React.createClass({
   },
   componentDidMount: function () {
     $.ajax({
-      url: "http://localhost:8080/series",
+      url: PSG_API_URL + "/series",
       dataType: 'json',
       cache: false,
       success: function (data) {
