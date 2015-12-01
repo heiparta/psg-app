@@ -184,7 +184,7 @@ var GameList = React.createClass({
   render: function() {
     var rows = [];
     this.props.games.forEach(function (game) {
-      rows.push(<GameRow key={game.teamAway} game={game} />);
+      rows.push(<GameRow key={game} game={game} />);
     });
     if (_.isEmpty(rows)) {
       return (
