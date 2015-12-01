@@ -206,9 +206,73 @@ var GameList = React.createClass({
               <th>Home team</th>
             </tr>
           </thead>
-          <tbody>{rows}</tbody>
+          <tbody>
+            {rows}
+          </tbody>
         </table>
+        <GameForm series={this.props.series} />
       </div>
+    );
+  }
+});
+
+var GameForm = React.createClass({
+  getInitialState: function() {
+    return {state: ""};
+  },
+  sendFormData: function () {
+    var data = {
+      teamHome: this.state.teamHome,
+      teamAway: this.state.teamAway,
+      goalsHome: this.state.goalsHome,
+      goalsAway: this.state.goalsAway,
+      playersHome: this.state.playersHome,
+      playersAway: this.state.playersAway,
+      series: this.props.series,
+    };
+    console.log("FOOO", data, this.state.teamHome);
+    $.ajax({
+      type: "POST",
+      url: PSG_API_URL + "/game",
+      data: data,
+      dataType: 'json',
+      success: function (data) {
+        console.log("Saved");
+        this.replaceState(this.getInitialState());
+      }.bind(this),
+      error: function (xhr, status, err) {
+        console.error(xhr, status, err.toString());
+      }.bind(this),
+    });
+  },
+  handleSubmit: function(event) {
+    console.log("FEAFE");
+    event.preventDefault();
+    this.setState({state: "Sending"}, this.sendFormData);
+  },
+  handleChange: function(event) {
+    console.log("event", event.target.name, event.target.value);
+    var newState = {};
+    newState[event.target.name] = event.target.value;
+    this.setState(newState);
+  },
+  render: function() {
+    return (
+      <form className="form-inline" action="" onSubmit={this.handleSubmit} >
+        <table className="table">
+          <tbody>
+            <tr>
+              <td><input name="playersAway" type="text" onChange={this.handleChange} value={this.state.playersAway} /></td>
+              <td><input name="teamAway" type="text" size="4" onChange={this.handleChange} value={this.state.teamAway} /></td>
+              <td><input name="goalsAway" type="text" size="2" onChange={this.handleChange} value={this.state.goalsAway} /></td>
+              <td><input name="goalsHome" type="text" size="2" onChange={this.handleChange} value={this.state.goalsHome} /></td>
+              <td><input name="teamHome" type="text" size="4" onChange={this.handleChange} value={this.state.teamHome} /></td>
+              <td><input name="playersHome" type="text" onChange={this.handleChange} value={this.state.playersHome} /></td>
+              <td><button type="submit" className="btn btn-primary">Save</button></td>
+            </tr>
+          </tbody>
+        </table>
+      </form>
     );
   }
 });
@@ -247,7 +311,7 @@ var Series = React.createClass({
       <div className="seriesDiv">
         <h2>Players in {this.state.name}</h2>
         <PlayerList players={this.state.players} />
-        <GameList games={this.state.games} />
+        <GameList series={this.state.name} games={this.state.games} />
 
       </div>
     );
