@@ -230,14 +230,12 @@ var GameForm = React.createClass({
       playersAway: this.state.playersAway,
       series: this.props.series,
     };
-    console.log("FOOO", data, this.state.teamHome);
     $.ajax({
       type: "POST",
       url: PSG_API_URL + "/game",
       data: data,
       dataType: 'json',
       success: function (data) {
-        console.log("Saved");
         this.replaceState(this.getInitialState());
       }.bind(this),
       error: function (xhr, status, err) {
@@ -246,12 +244,10 @@ var GameForm = React.createClass({
     });
   },
   handleSubmit: function(event) {
-    console.log("FEAFE");
     event.preventDefault();
     this.setState({state: "Sending"}, this.sendFormData);
   },
   handleChange: function(event) {
-    console.log("event", event.target.name, event.target.value);
     var newState = {};
     newState[event.target.name] = event.target.value;
     this.setState(newState);
