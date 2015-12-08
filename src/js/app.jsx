@@ -8,6 +8,8 @@ var Plotly = require('react-plotlyjs');
 
 import { Router, Route, Link } from 'react-router'
 
+import Login from './login'
+
 var PlayerStatsRow = React.createClass({
   render: function() {
     var numberOfLosses = (this.props.stats.numberOfGames - this.props.stats.numberOfWins) || undefined;
@@ -339,7 +341,7 @@ var SeriesList = React.createClass({
 
 var App = React.createClass({
   getInitialState: function () {
-    return { series: [] };
+    return { series: [], loggedIn: Login.loggedIn };
   },
   componentDidMount: function () {
     $.ajax({
@@ -357,6 +359,7 @@ var App = React.createClass({
   render() {
     return (
       <div>
+        <Login />
         <h1>PSG stats</h1>
         <SeriesList series={this.state.series} />
 
