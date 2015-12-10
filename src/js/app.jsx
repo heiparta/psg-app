@@ -8,7 +8,7 @@ var Plotly = require('react-plotlyjs');
 
 import { Router, Route, Link } from 'react-router'
 
-import Login from './login'
+import { Login, Logout, auth } from './login'
 
 var PlayerStatsRow = React.createClass({
   render: function() {
@@ -117,6 +117,7 @@ var PlayerStreakGraph = React.createClass({
       showLink: false,
       displayModeBar: false,
     };
+      //<p>Plot here</p>
     return (
       <Plotly className="streakGraph" data={data} layout={layout} config={config} />
     );
@@ -341,7 +342,7 @@ var SeriesList = React.createClass({
 
 var App = React.createClass({
   getInitialState: function () {
-    return { series: [], loggedIn: Login.loggedIn };
+    return { series: [] };
   },
   componentDidMount: function () {
     $.ajax({
@@ -372,6 +373,7 @@ var App = React.createClass({
 ReactDOM.render((
   <Router>
     <Route path="/" component={App}>
+      <Route path="logout" component={Logout} />
       <Route path="series/:name" component={Series} />
       <Route path="player/:name" component={Player} />
     </Route>
