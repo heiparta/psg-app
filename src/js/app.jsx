@@ -117,7 +117,6 @@ var PlayerStreakGraph = React.createClass({
       showLink: false,
       displayModeBar: false,
     };
-      //<p>Plot here</p>
     return (
       <Plotly className="streakGraph" data={data} layout={layout} config={config} />
     );
@@ -160,7 +159,6 @@ var PlayerList = React.createClass({
           </thead>
           <tbody>{rows}</tbody>
         </table>
-        <PlayerStreakGraph players={this.props.players} />
       </div>
     );
   }
@@ -213,7 +211,6 @@ var GameList = React.createClass({
             {rows}
           </tbody>
         </table>
-        <GameForm series={this.props.series} />
       </div>
     );
   }
@@ -267,8 +264,8 @@ var GameForm = React.createClass({
               <td><input name="goalsHome" type="text" size="2" onChange={this.handleChange} value={this.state.goalsHome} /></td>
               <td><input name="teamHome" type="text" size="4" onChange={this.handleChange} value={this.state.teamHome} /></td>
               <td><input name="playersHome" type="text" onChange={this.handleChange} value={this.state.playersHome} /></td>
-              <td><button type="submit" className="btn btn-primary">Save</button></td>
             </tr>
+            <tr><td><button type="submit" className="btn btn-primary">Save</button></td></tr>
           </tbody>
         </table>
       </form>
@@ -306,12 +303,19 @@ var Series = React.createClass({
     });
   },
   render: function() {
+    if (_.isEmpty(this.state.players)) {
+      return (
+        <div className="seriesDiv">
+        </div>
+      )
+    }
     return (
       <div className="seriesDiv">
         <h2>Players in {this.state.name}</h2>
         <PlayerList players={this.state.players} />
-        <GameList series={this.state.name} games={this.state.games} />
-
+        <PlayerStreakGraph players={this.state.players} />
+        <GameList games={this.state.games} />
+        { auth.loggedIn() ? <GameForm series={this.state.name} /> : null }
       </div>
     );
   }
