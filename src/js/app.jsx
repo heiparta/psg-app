@@ -226,8 +226,8 @@ var GameForm = React.createClass({
       teamAway: this.state.teamAway,
       goalsHome: this.state.goalsHome,
       goalsAway: this.state.goalsAway,
-      playersHome: this.state.playersHome,
-      playersAway: this.state.playersAway,
+      playersHome: _.map(this.state.playersHome.split(','), _.trim).join(','),
+      playersAway: _.map(this.state.playersAway.split(','), _.trim).join(','),
       series: this.props.series,
     };
     $.ajax({
