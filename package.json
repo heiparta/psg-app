@@ -16,6 +16,7 @@
     "bunyan": "^1.4.0",
     "chart.js": "^1.0.2",
     "gulp": "^3.9.0",
+    "gulp-bundle-assets": "^2.23.0",
     "history": "^1.13.1",
     "lodash": "^3.10.0",
     "nodemon": "^1.3.7",
