@@ -306,11 +306,20 @@ var Series = React.createClass({
     };
   },
   onTabClick: function (item) {
-    this.setState({activeTabId: item});
+    if (this.state.activeTabId !== item) {
+      this.setState({activeTabId: item});
+    }
   },
-  componentDidMount: function () {
+  getSeriesStats: function () {
+    var data;
+    if (this.state.activeTabId === "current") {
+      data = {
+        stats_days: (new Date()).getDate()
+      };
+    }
     $.ajax({
       url: PSG_API_URL + "/series/" + this.props.params.name,
+      data: data,
       dataType: 'json',
       cache: false,
       success: function (data) {
@@ -320,6 +329,14 @@ var Series = React.createClass({
         console.error(xhr, status, err.toString());
       }.bind(this),
     });
+  },
+  componentDidUpdate: function (prevProps, prevState) {
+    if (this.state.activeTabId !== prevState.activeTabId) {
+      this.getSeriesStats();
+    }
+  },
+  componentDidMount: function () {
+    this.getSeriesStats();
     $.ajax({
       url: PSG_API_URL + "/series/" + this.props.params.name + "/games",
       dataType: 'json',
