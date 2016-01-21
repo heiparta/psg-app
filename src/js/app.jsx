@@ -276,15 +276,15 @@ var GameForm = React.createClass({
 
 var SeriesStatsChooser = React.createClass({
   handleTabClick: function (item) {
-    console.log("got event", item);
+    this.props.onTabClick(item);
   },
   render: function () {
     var self = this;
     var tabs = this.props.tabs.map(function (item) {
-      return <li key={item.key} className={self.props.activeTabKey === item.key ? 'active' : ''}><a href="#" onClick={self.handleTabClick}>{item.name}</a></li>
+      return <li key={item.key} className={self.props.activeTabId === item.key ? 'active' : ''}><a href="#" onClick={self.handleTabClick.bind(self, item.key)}>{item.name}</a></li>
     });
     return (
-        <ul className="nav nav-tabs">
+        <ul className="nav nav-pills">
           {tabs}
         </ul>
     )
@@ -302,11 +302,11 @@ var Series = React.createClass({
         {name: "Current month", key:"current"},
         {name: "All time", key:"alltime"},
       ],
-      activeTabKey: "current",
+      activeTabId: "current",
     };
   },
-  handleTabClick: function (item) {
-    console.log("something clicked", item);
+  onTabClick: function (item) {
+    this.setState({activeTabId: item});
   },
   componentDidMount: function () {
     $.ajax({
@@ -342,7 +342,7 @@ var Series = React.createClass({
     return (
       <div className="seriesDiv">
         <h2>{this.state.name}</h2>
-        <SeriesStatsChooser tabs={this.state.tabs} activeTabId={this.state.activeTabId} />
+        <SeriesStatsChooser tabs={this.state.tabs} activeTabId={this.state.activeTabId} onTabClick={this.onTabClick} />
         <PlayerList players={this.state.players} />
         <PlayerStreakGraph players={this.state.players} />
         <GameList games={this.state.games} />
