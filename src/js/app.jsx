@@ -6,7 +6,8 @@ var ReactDOM = require('react-dom');
 
 var Plotly = require('react-plotlyjs');
 
-import { Router, Route, Link } from 'react-router'
+import createBrowserHistory from 'history/lib/createBrowserHistory'
+import { Router, Route, Link, IndexRoute } from 'react-router'
 
 import { Login, Logout, auth } from './login'
 
@@ -273,10 +274,39 @@ var GameForm = React.createClass({
   }
 });
 
+var SeriesStatsChooser = React.createClass({
+  handleTabClick: function (item) {
+    console.log("got event", item);
+  },
+  render: function () {
+    var self = this;
+    var tabs = this.props.tabs.map(function (item) {
+      return <li key={item.key} className={self.props.activeTabKey === item.key ? 'active' : ''}><a href="#" onClick={self.handleTabClick}>{item.name}</a></li>
+    });
+    return (
+        <ul className="nav nav-tabs">
+          {tabs}
+        </ul>
+    )
+  },
+});
+
 var Series = React.createClass({
   getInitialState: function () {
     var games = [];
-    return { name: "", players: [], games: games };
+    return {
+      name: "",
+      players: [],
+      games: games,
+      tabs: [
+        {name: "Current month", key:"current"},
+        {name: "All time", key:"alltime"},
+      ],
+      activeTabKey: "current",
+    };
+  },
+  handleTabClick: function (item) {
+    console.log("something clicked", item);
   },
   componentDidMount: function () {
     $.ajax({
@@ -311,7 +341,8 @@ var Series = React.createClass({
     }
     return (
       <div className="seriesDiv">
-        <h2>Players in {this.state.name}</h2>
+        <h2>{this.state.name}</h2>
+        <SeriesStatsChooser tabs={this.state.tabs} activeTabId={this.state.activeTabId} />
         <PlayerList players={this.state.players} />
         <PlayerStreakGraph players={this.state.players} />
         <GameList games={this.state.games} />
@@ -375,7 +406,7 @@ var App = React.createClass({
 })
 
 ReactDOM.render((
-  <Router>
+  <Router history={createBrowserHistory()}>
     <Route path="/" component={App}>
       <Route path="logout" component={Logout} />
       <Route path="series/:name" component={Series} />

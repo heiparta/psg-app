@@ -35,14 +35,23 @@ Server.prototype.run = function () {
     next();
   });
 
-  server.get(/\/app\/?.*/, restify.serveStatic({
-    directory: __dirname,
-    default: 'index.html',
-  }));
-
   server.get(/\/static\/?.*/, restify.serveStatic({
     directory: __dirname,
   }));
+
+  server.get(/.*/, function (req, res, next) {
+    fs.readFile('./app/index.html', 'utf-8', function (err, file) {
+      if (err) {
+        res.send(500);
+        return next();
+      }
+      res.setHeader('Content-Type', 'text/html');
+      res.writeHead(200);
+      res.write(file);
+      res.end();
+      return next();
+    });
+  });
 
   server.on('uncaughtException', function (req, res, route, err) {
     self.log.error("uncaughtException:", err);
