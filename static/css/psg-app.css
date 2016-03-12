@@ -1,0 +1,15 @@
+
+.dragRow div {
+    /*padding: 30px;*/
+}
+
+.dragContainer {
+    border: 1px solid #333;
+    border-radius: 10px;
+    min-height: 94px;
+    padding: 5px;
+}
+
+.dragSource {
+    margin-bottom: 10px;
+}
