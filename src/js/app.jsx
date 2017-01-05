@@ -183,8 +183,9 @@ var GameRow = React.createClass({
   render: function() {
     var awayTeam = this.props.game.playersAway.join(', ');
     var homeTeam = this.props.game.playersHome.join(', ');
+    var dateString = new Date(this.props.game.date).toDateString();
     return (
-      <tr>
+      <tr title={dateString}>
         <td>{awayTeam}</td>
         <td>{this.props.game.teamAway}</td>
         <td>{this.props.game.goalsAway}</td>
