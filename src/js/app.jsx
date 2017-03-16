@@ -548,7 +548,7 @@ var App = React.createClass({
       dataType: 'json',
       cache: false,
       success: function (data) {
-        this.setState({ series: data.series });
+        this.setState({ series: data.data });
       }.bind(this),
       error: function (xhr, status, err) {
         console.error(xhr, status, err.toString());
