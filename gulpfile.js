@@ -31,7 +31,7 @@ var doIt = function (watch) {
   b.transform("babelify", {presets: ["es2015", "react"]})
     .bundle()
     .pipe(source('bundle.js'))
-    .pipe(gulp.dest('./static/js/'));
+    .pipe(gulp.dest('./app/static/js/'));
 };
 
 gulp.task('watch', ["bwatch"], function() {
