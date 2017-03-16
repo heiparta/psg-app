@@ -1,17 +1,18 @@
-/*jshint ignore:start */
+/*global $ */
+"use strict";
 
-var _ = require('lodash');
-var React = require('react');
-var ReactDOM = require('react-dom');
-var Modal = require('react-modal');
+import * as _ from "lodash";
+import * as React from "react";
+import * as ReactDOM from "react-dom";
+import * as Modal from "react-modal";
 
-var dragula = require('react-dragula');
-var Plotly = require('react-plotlyjs');
+import * as dragula from 'react-dragula';
+import * as Plotly from 'react-plotlyjs';
 
-import createBrowserHistory from 'history/lib/createBrowserHistory'
-import { Router, Route, Link, IndexRoute } from 'react-router'
+import createBrowserHistory from 'history/lib/createBrowserHistory';
+import { Router, Route, Link, IndexRoute } from 'react-router';
 
-import { Login, Logout, auth } from './login'
+import { Login, Logout, auth } from './login';
 
 var modalStyle = {
   content: {
@@ -71,7 +72,7 @@ var Player = React.createClass({
   },
   componentDidMount: function () {
     $.ajax({
-      url: PSG_API_URL + "/player/" + this.props.params.name,
+      url: window.PSG_API_URL + "/player/" + this.props.params.name,
       dataType: 'json',
       cache: false,
       success: function (data) {
@@ -96,34 +97,34 @@ var PlayerStreakGraph = React.createClass({
   render: function() {
     var sortedPlayers = _.sortBy(this.props.players, 'stats.currentStreak');
     var data = [
-        {
-          type: "bar",
-          y: _.map(sortedPlayers, function (p) {
-            return p.stats.currentStreak < 0 ? p.name : undefined;
-          }),
-          x: _.map(sortedPlayers, function (p) {
-            return p.stats.currentStreak < 0 ? p.stats.currentStreak : undefined;
-          }),
-          name: "Losing streak",
-          orientation: "h",
-          marker: {
-            color: "rgb(240, 20, 20)",
-          },
+      {
+        type: "bar",
+        y: _.map(sortedPlayers, function (p) {
+          return p.stats.currentStreak < 0 ? p.name : undefined;
+        }),
+        x: _.map(sortedPlayers, function (p) {
+          return p.stats.currentStreak < 0 ? p.stats.currentStreak : undefined;
+        }),
+        name: "Losing streak",
+        orientation: "h",
+        marker: {
+          color: "rgb(240, 20, 20)",
         },
-        {
-          type: "bar",
-          y: _.map(sortedPlayers, function (p) {
-            return p.stats.currentStreak >= 0 ? p.name : undefined;
-          }),
-          x: _.map(sortedPlayers, function (p) {
-            return p.stats.currentStreak >= 0 ? p.stats.currentStreak : undefined;
-          }),
-          name: "Winning streak",
-          orientation: "h",
-          marker: {
-            color: "rgb(20, 240, 20)",
-          },
+      },
+      {
+        type: "bar",
+        y: _.map(sortedPlayers, function (p) {
+          return p.stats.currentStreak >= 0 ? p.name : undefined;
+        }),
+        x: _.map(sortedPlayers, function (p) {
+          return p.stats.currentStreak >= 0 ? p.stats.currentStreak : undefined;
+        }),
+        name: "Winning streak",
+        orientation: "h",
+        marker: {
+          color: "rgb(20, 240, 20)",
         },
+      },
     ];
     var layout = {
       showlegend: false,
@@ -207,7 +208,7 @@ var GameList = React.createClass({
       return (
         <div className="container">
         </div>
-      )
+      );
     }
     return (
       <div className="container">
@@ -270,7 +271,7 @@ var GameDragForm = React.createClass({
   addComponentToDrake: function (item) {
     if (!item) {
       return;
-    };
+    }
     var domNode = ReactDOM.findDOMNode(item);
     this.state.dragContainers[item.props.playerSink] = domNode;
     this.state.drake.containers.push(domNode);
@@ -348,7 +349,7 @@ var GameDragForm = React.createClass({
     }
     $.ajax({
       type: "POST",
-      url: PSG_API_URL + "/game",
+      url: window.PSG_API_URL + "/game",
       data: data,
       dataType: 'json',
       success: function (data) {
@@ -377,7 +378,7 @@ var GameDragForm = React.createClass({
           <span onClick={self.onDraggableClick.bind(self, p)} key={p} ref={"dragItem" + p} className={"dragItem btn btn-info dragItem" + p}>{p}</span>
         );
       });
-    }
+    };
 
     return (
       <div className="container">
@@ -423,13 +424,13 @@ var SeriesStatsChooser = React.createClass({
   render: function () {
     var self = this;
     var tabs = this.props.tabs.map(function (item) {
-      return <li key={item.key} className={self.props.activeTabId === item.key ? 'active' : ''}><a href="#" onClick={self.handleTabClick.bind(self, item.key)}>{item.name}</a></li>
+      return <li key={item.key} className={self.props.activeTabId === item.key ? 'active' : ''}><a href="#" onClick={self.handleTabClick.bind(self, item.key)}>{item.name}</a></li>;
     });
     return (
         <ul className="nav nav-pills">
           {tabs}
         </ul>
-    )
+    );
   },
 });
 
@@ -460,7 +461,7 @@ var Series = React.createClass({
       };
     }
     $.ajax({
-      url: PSG_API_URL + "/series/" + this.props.params.name,
+      url: window.PSG_API_URL + "/series/" + this.props.params.name,
       data: data,
       dataType: 'json',
       cache: false,
@@ -480,7 +481,7 @@ var Series = React.createClass({
   refreshStats: function () {
     this.getSeriesStats();
     $.ajax({
-      url: PSG_API_URL + "/series/" + this.props.params.name + "/games",
+      url: window.PSG_API_URL + "/series/" + this.props.params.name + "/games",
       dataType: 'json',
       cache: false,
       success: function (data) {
@@ -499,7 +500,7 @@ var Series = React.createClass({
       return (
         <div className="seriesDiv">
         </div>
-      )
+      );
     }
     return (
       <div className="container">
@@ -518,7 +519,7 @@ var SeriesListRow = React.createClass({
   render() {
     return (
         <li><Link to={"/series/" + this.props.name}>{this.props.name}</Link></li>
-    )
+    );
   }
 });
 
@@ -527,13 +528,13 @@ var SeriesList = React.createClass({
     var rows = _.map(this.props.series, function (s) {
       return (
         <SeriesListRow key={s} name={s} />
-      )
+      );
     });
     return (
         <ul>
           {rows}
         </ul>
-    )
+    );
   }
 });
 
@@ -543,7 +544,7 @@ var App = React.createClass({
   },
   componentDidMount: function () {
     $.ajax({
-      url: PSG_API_URL + "/series",
+      url: window.PSG_API_URL + "/series",
       dataType: 'json',
       cache: false,
       success: function (data) {
@@ -557,15 +558,15 @@ var App = React.createClass({
   render() {
     return (
       <div>
-        <Login />
-        <h1>PSG stats</h1>
-        <SeriesList series={this.state.series} />
+      <Login />
+      <h1>PSG stats</h1>
+      <SeriesList series={this.state.series} />
 
-        {this.props.children}
+      {this.props.children}
       </div>
-    )
+    );
   }
-})
+});
 
 ReactDOM.render((
   <Router history={createBrowserHistory()}>
@@ -575,7 +576,5 @@ ReactDOM.render((
       <Route path="player/:name" component={Player} />
     </Route>
   </Router>
-), document.getElementById('content'))
-
-/*jshint ignore:end */
+), document.getElementById('content'));
 
