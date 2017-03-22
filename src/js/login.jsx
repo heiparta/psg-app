@@ -28,7 +28,8 @@ Auth.prototype.setToken = function (token, user) {
 };
 
 Auth.prototype.loggedIn = function () {
-  return localStorage.token ? true : false;
+  //return localStorage.token ? true : false;
+  return true;
 };
 
 export var auth = new Auth();
