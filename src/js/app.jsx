@@ -6,11 +6,12 @@ import * as React from "react";
 import * as ReactDOM from "react-dom";
 import * as Modal from "react-modal";
 
-import * as dragula from 'react-dragula';
-import * as Plotly from 'react-plotlyjs';
+import dragula from 'react-dragula';
+import Plotly from 'plotly.js/dist/plotly-basic.min.js';
+import createPlotlyComponent from 'react-plotlyjs';
 
 import createBrowserHistory from 'history/lib/createBrowserHistory';
-import { Router, Route, Link, IndexRoute } from 'react-router';
+import { HashRouter as Router, Route, Link } from 'react-router-dom';
 
 import { Login, Logout, auth } from './login';
 
@@ -133,8 +134,9 @@ var PlayerStreakGraph = React.createClass({
       showLink: false,
       displayModeBar: false,
     };
+    const PlotlyComponent = createPlotlyComponent(Plotly);
     return (
-      <Plotly className="streakGraph" data={data} layout={layout} config={config} />
+      <PlotlyComponent className="streakGraph" data={data} layout={layout} config={config} />
     );
   }
 });
@@ -461,12 +463,12 @@ var Series = React.createClass({
       };
     }
     $.ajax({
-      url: window.PSG_API_URL + "/series/" + this.props.params.name,
+      url: window.PSG_API_URL + "/series/" + this.props.match.params.name,
       data: data,
       dataType: 'json',
       cache: false,
       success: function (data) {
-        this.setState({ name: data.series.name, players: data.series.players });
+        this.setState({ name: data.data.name, players: data.data.players });
       }.bind(this),
       error: function (xhr, status, err) {
         console.error(xhr, status, err.toString());
@@ -481,7 +483,7 @@ var Series = React.createClass({
   refreshStats: function () {
     this.getSeriesStats();
     $.ajax({
-      url: window.PSG_API_URL + "/series/" + this.props.params.name + "/games",
+      url: window.PSG_API_URL + "/series/" + this.props.match.params.name + "/games",
       dataType: 'json',
       cache: false,
       success: function (data) {
@@ -502,14 +504,14 @@ var Series = React.createClass({
         </div>
       );
     }
+        //<GameList games={this.state.games} />
+        //{ auth.loggedIn() ? <GameDragForm onGameChange={this.refreshStats} series={this.state.name} players={this.state.players} /> : null }
     return (
       <div className="container">
         <h2>{this.state.name}</h2>
         <SeriesStatsChooser tabs={this.state.tabs} activeTabId={this.state.activeTabId} onTabClick={this.onTabClick} />
         <PlayerList players={this.state.players} />
         <PlayerStreakGraph players={this.state.players} />
-        <GameList games={this.state.games} />
-        { auth.loggedIn() ? <GameDragForm onGameChange={this.refreshStats} series={this.state.name} players={this.state.players} /> : null }
       </div>
     );
   }
@@ -569,12 +571,13 @@ var App = React.createClass({
 });
 
 ReactDOM.render((
-  <Router history={createBrowserHistory()}>
-    <Route path="/" component={App}>
-      <Route path="logout" component={Logout} />
-      <Route path="series/:name" component={Series} />
-      <Route path="player/:name" component={Player} />
-    </Route>
+  <Router>
+    <div>
+      <Route exact path="/" component={App}/>
+      <Route path="/logout" component={Logout} />
+      <Route path="/series/:name" component={Series} />
+      <Route path="/player/:name" component={Player} />
+    </div>
   </Router>
 ), document.getElementById('content'));
 

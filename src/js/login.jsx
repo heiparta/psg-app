@@ -6,7 +6,7 @@ var React = require('react');
 var ReactDOM = require('react-dom');
 var util = require('util');
 
-import { Link } from 'react-router'
+import { Link } from 'react-router-dom'
 
 var Auth = function () {
 };
