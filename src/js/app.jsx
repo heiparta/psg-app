@@ -4,7 +4,7 @@
 import * as _ from "lodash";
 import * as React from "react";
 import * as ReactDOM from "react-dom";
-import * as Modal from "react-modal";
+import Modal from "react-modal";
 
 import dragula from 'react-dragula';
 import Plotly from 'plotly.js/dist/plotly-basic.min.js';
@@ -385,12 +385,12 @@ var GameDragForm = React.createClass({
     return (
       <div className="container">
         <button className="btn btn-info" onClick={this.openModal}>Add new game</button>
-        <Modal isOpen={this.state.modalIsOpen} onRequestClose={this.closeModal} style={modalStyle}>
+        <Modal contentLabel="Game result" isOpen={this.state.modalIsOpen} onRequestClose={this.closeModal} style={modalStyle}>
           <h4>Drag players to teams. Clicking on a player removes him from the team.</h4>
           <div className="row">
             <GameDragSourceContainer playerSink="playersIdle" ref={this.addComponentToDrake} width="12" extraClass="text-center dragSource" players={playerList(this.state.playersIdle)} />
           </div>
-          <form role="form-horizontal" action="" onSubmit={this.handleSubmit}>
+          <form role="form-horizontal" onSubmit={this.handleSubmit}>
             <div className="row dragRow">
               <GameDragTargetContainer playerSink="playersAway" ref={this.addComponentToDrake} extraClass="dragContainer" players={playerList(this.state.playersAway)} />
               <div className="col-sm-2 form-group">
@@ -487,7 +487,7 @@ var Series = React.createClass({
       dataType: 'json',
       cache: false,
       success: function (data) {
-        this.setState({ games: data.games });
+        this.setState({ games: data.data });
       }.bind(this),
       error: function (xhr, status, err) {
         console.error(xhr, status, err.toString());
@@ -504,14 +504,14 @@ var Series = React.createClass({
         </div>
       );
     }
-        //<GameList games={this.state.games} />
-        //{ auth.loggedIn() ? <GameDragForm onGameChange={this.refreshStats} series={this.state.name} players={this.state.players} /> : null }
     return (
       <div className="container">
         <h2>{this.state.name}</h2>
         <SeriesStatsChooser tabs={this.state.tabs} activeTabId={this.state.activeTabId} onTabClick={this.onTabClick} />
         <PlayerList players={this.state.players} />
         <PlayerStreakGraph players={this.state.players} />
+        <GameList games={this.state.games} />
+        { auth.loggedIn() ? <GameDragForm onGameChange={this.refreshStats} series={this.state.name} players={this.state.players} /> : null }
       </div>
     );
   }
