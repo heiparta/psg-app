@@ -12,7 +12,7 @@ var paths = {
 
 gulp.task('js', function() {
   var watch = false;
-  doIt(watch);
+  return doIt(watch);
 });
 gulp.task('bwatch', function() {
   var watch = true;
@@ -28,7 +28,7 @@ var doIt = function (watch) {
   if (watch) {
     b = browserify(b);
   }
-  b.transform("babelify", {presets: ["es2015", "react"]})
+  return b.transform("babelify", {presets: ["es2015", "react"]})
     .bundle()
     .pipe(source('bundle.js'))
     .pipe(gulp.dest('./app/static/js/'));
