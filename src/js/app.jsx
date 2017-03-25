@@ -262,6 +262,10 @@ var GameDragForm = React.createClass({
       playersHome: [],
       playersAway: [],
       playersIdle: _.map(this.props.players, 'name'),
+      goalsAway: "",
+      goalsHome: "",
+      teamAway: "",
+      teamHome: "",
     };
   },
   getInitialState: function () {
@@ -336,13 +340,19 @@ var GameDragForm = React.createClass({
 
   },
   sendFormData: function () {
+    var self = this;
+    function mapPlayerNameToKey (name) {
+      return _.find(self.props.players, function (p) {
+        return p.name === name;
+      }).key;
+    }
     var data = {
       teamHome: this.state.teamHome,
       teamAway: this.state.teamAway,
       goalsHome: this.state.goalsHome,
       goalsAway: this.state.goalsAway,
-      playersHome: _.map(this.state.playersHome, _.trim).join(','),
-      playersAway: _.map(this.state.playersAway, _.trim).join(','),
+      playersHome: _.map(this.state.playersHome, mapPlayerNameToKey),
+      playersAway: _.map(this.state.playersAway, mapPlayerNameToKey),
       series: this.props.series,
     };
     if (_.some(data, _.isEmpty)) {
@@ -352,8 +362,9 @@ var GameDragForm = React.createClass({
     $.ajax({
       type: "POST",
       url: window.PSG_API_URL + "/game",
-      data: data,
+      data: JSON.stringify(data),
       dataType: 'json',
+      contentType: 'application/json',
       success: function (data) {
         this.closeModal();
         this.props.onGameChange();
@@ -409,7 +420,7 @@ var GameDragForm = React.createClass({
             </div>
             <span className="text-warning">{this.state.error}</span>
             <div className="form-group text-center">
-              <button onClick={this.closeModal} className="btn btn-link">Cancel</button>
+              <button type="button" onClick={this.closeModal} className="btn btn-link">Cancel</button>
               <button type="submit" className="btn btn-primary">Save</button>
             </div>
           </form>
@@ -468,7 +479,7 @@ var Series = React.createClass({
       dataType: 'json',
       cache: false,
       success: function (data) {
-        this.setState({ name: data.data.name, players: data.data.players });
+        this.setState({ key: data.data.key, name: data.data.name, players: data.data.players });
       }.bind(this),
       error: function (xhr, status, err) {
         console.error(xhr, status, err.toString());
@@ -511,7 +522,7 @@ var Series = React.createClass({
         <PlayerList players={this.state.players} />
         <PlayerStreakGraph players={this.state.players} />
         <GameList games={this.state.games} />
-        { auth.loggedIn() ? <GameDragForm onGameChange={this.refreshStats} series={this.state.name} players={this.state.players} /> : null }
+        { auth.loggedIn() ? <GameDragForm onGameChange={this.refreshStats} series={this.state.key} players={this.state.players} /> : null }
       </div>
     );
   }
