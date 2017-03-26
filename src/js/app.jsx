@@ -29,15 +29,15 @@ var modalStyle = {
 
 var PlayerStatsRow = React.createClass({
   render: function() {
-    var numberOfLosses = (this.props.stats.numberOfGames - this.props.stats.numberOfWins) || undefined;
+    var numberOfLosses = (this.props.player.statNumberOfGames - this.props.player.statNumberOfWins) || undefined;
     return (
       <tr>
-        <td>{this.props.name}</td>
-        <td>{this.props.stats.numberOfGames}</td>
-        <td>{this.props.stats.numberOfWins}</td>
+        <td>{this.props.player.name}</td>
+        <td>{this.props.player.statNumberOfGames}</td>
+        <td>{this.props.player.statNumberOfWins}</td>
         <td>{numberOfLosses}</td>
-        <td>{this.props.stats.winPercentage + " %"}</td>
-        <td>{this.props.stats.currentStreak}</td>
+        <td>{this.props.player.statWinPercentage + " %"}</td>
+        <td>{this.props.player.statCurrentStreak}</td>
       </tr>
     );
   }
@@ -47,7 +47,7 @@ var PlayerStatsTable = React.createClass({
   render: function() {
     var rows = [];
     this.props.players.forEach(function (player) {
-      rows.push(<PlayerStatsRow key={player.name} name={player.name} stats={player.stats} />);
+      rows.push(<PlayerStatsRow key={player.name} player={player} />);
     });
     return (
       <table className="table">
@@ -96,15 +96,15 @@ var Player = React.createClass({
 
 var PlayerStreakGraph = React.createClass({
   render: function() {
-    var sortedPlayers = _.sortBy(this.props.players, 'stats.currentStreak');
+    var sortedPlayers = _.sortBy(this.props.players, 'statCurrentStreak');
     var data = [
       {
         type: "bar",
         y: _.map(sortedPlayers, function (p) {
-          return p.stats.currentStreak < 0 ? p.name : undefined;
+          return p.statCurrentStreak < 0 ? p.name : undefined;
         }),
         x: _.map(sortedPlayers, function (p) {
-          return p.stats.currentStreak < 0 ? p.stats.currentStreak : undefined;
+          return p.statCurrentStreak < 0 ? p.statCurrentStreak : undefined;
         }),
         name: "Losing streak",
         orientation: "h",
@@ -115,10 +115,10 @@ var PlayerStreakGraph = React.createClass({
       {
         type: "bar",
         y: _.map(sortedPlayers, function (p) {
-          return p.stats.currentStreak >= 0 ? p.name : undefined;
+          return p.statCurrentStreak >= 0 ? p.name : undefined;
         }),
         x: _.map(sortedPlayers, function (p) {
-          return p.stats.currentStreak >= 0 ? p.stats.currentStreak : undefined;
+          return p.statCurrentStreak >= 0 ? p.statCurrentStreak : undefined;
         }),
         name: "Winning streak",
         orientation: "h",
@@ -143,14 +143,14 @@ var PlayerStreakGraph = React.createClass({
 
 var PlayerListRow = React.createClass({
   render: function() {
-    var numberOfLosses = (this.props.stats.numberOfGames - this.props.stats.numberOfWins) || 0;
+    var numberOfLosses = (this.props.player.statNumberOfGames - this.props.player.statNumberOfWins) || 0;
     return (
       <tr>
-        <th><Link to={"/player/" + this.props.name}>{this.props.name}</Link></th>
-        <td>{this.props.stats.numberOfGames}</td>
-        <td>{this.props.stats.numberOfWins}</td>
+        <th><Link to={"/player/" + this.props.player.name}>{this.props.player.name}</Link></th>
+        <td>{this.props.player.statNumberOfGames}</td>
+        <td>{this.props.player.statNumberOfWins}</td>
         <td>{numberOfLosses}</td>
-        <td>{this.props.stats.winPercentage + " %"}</td>
+        <td>{this.props.player.statWinPercentage + " %"}</td>
       </tr>
     );
   }
@@ -160,7 +160,7 @@ var PlayerList = React.createClass({
   render: function() {
     var rows = this.props.players.map(function (player) {
       return (
-        <PlayerListRow key={player.name} name={player.name} stats={player.stats} />
+        <PlayerListRow key={player.name} player={player} />
       );
     });
     return (
