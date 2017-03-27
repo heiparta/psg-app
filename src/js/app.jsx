@@ -455,10 +455,11 @@ var Series = React.createClass({
       players: [],
       games: games,
       tabs: [
-        {name: "Current month", key:"current"},
+        //{name: "Current month", key:"current"},
         {name: "All time", key:"alltime"},
       ],
-      activeTabId: "current",
+      //activeTabId: "current",
+      activeTabId: "alltime",
     };
   },
   onTabClick: function (item) {
