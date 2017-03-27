@@ -355,7 +355,7 @@ var GameDragForm = React.createClass({
       playersAway: _.map(this.state.playersAway, mapPlayerNameToKey),
       series: this.props.series,
     };
-    if (_.some(data, _.isEmpty) && data.goalsHome === data.goalsAway) {
+    if (_.some(data, _.isEmpty) || data.goalsHome === data.goalsAway) {
       this.setState({error: "Check the game data"});
       return;
     }
