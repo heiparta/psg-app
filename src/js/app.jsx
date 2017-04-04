@@ -510,12 +510,6 @@ var Series = React.createClass({
     this.refreshStats();
   },
   render: function() {
-    if (_.isEmpty(this.state.players)) {
-      return (
-        <div className="seriesDiv">
-        </div>
-      );
-    }
     return (
       <div className="container">
         <h2>{this.state.name}</h2>
