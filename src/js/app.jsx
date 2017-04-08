@@ -27,6 +27,12 @@ var modalStyle = {
   }
 };
 
+function mapPlayerNameToKey (name, players) {
+  return _.find(players, function (p) {
+    return p.name === name;
+  }).key;
+}
+
 var PlayerStatsRow = React.createClass({
   render: function() {
     var numberOfLosses = (this.props.player.statNumberOfGames - this.props.player.statNumberOfWins) || undefined;
@@ -184,9 +190,9 @@ var PlayerList = React.createClass({
 
 var GameRow = React.createClass({
   render: function() {
-    var awayTeam = this.props.game.playersAway.join(', ');
-    var homeTeam = this.props.game.playersHome.join(', ');
-    var dateString = new Date(this.props.game.date).toDateString();
+    var awayTeam = _.map(this.props.game.playersAway, 'name').join(', ');
+    var homeTeam = _.map(this.props.game.playersHome, 'name').join(', ');
+    var dateString = new Date(this.props.game.range).toDateString();
     return (
       <tr title={dateString}>
         <td>{awayTeam}</td>
@@ -204,7 +210,7 @@ var GameList = React.createClass({
   render: function() {
     var rows = [];
     this.props.games.forEach(function (game) {
-      rows.push(<GameRow key={game.id} game={game} />);
+      rows.push(<GameRow key={game.range} game={game} />);
     });
     if (_.isEmpty(rows)) {
       return (
@@ -341,18 +347,13 @@ var GameDragForm = React.createClass({
   },
   sendFormData: function () {
     var self = this;
-    function mapPlayerNameToKey (name) {
-      return _.find(self.props.players, function (p) {
-        return p.name === name;
-      }).key;
-    }
     var data = {
       teamHome: this.state.teamHome,
       teamAway: this.state.teamAway,
       goalsHome: this.state.goalsHome,
       goalsAway: this.state.goalsAway,
-      playersHome: _.map(this.state.playersHome, mapPlayerNameToKey),
-      playersAway: _.map(this.state.playersAway, mapPlayerNameToKey),
+      playersHome: _.map(this.state.playersHome, function (p) { return mapPlayerNameToKey(p, self.props.players);}),
+      playersAway: _.map(this.state.playersAway, function (p) { return mapPlayerNameToKey(p, self.props.players);}),
       series: this.props.series,
     };
     if (_.some(data, _.isEmpty) || data.goalsHome === data.goalsAway) {
@@ -381,6 +382,13 @@ var GameDragForm = React.createClass({
   handleChange: function(event) {
     var newState = {};
     newState[event.target.name] = event.target.value;
+    this.setState(newState);
+  },
+  componentWillReceiveProps: function (nextProps) {
+    // Props were changed, reset new player list to state
+    var newState = {
+      playersIdle: _.map(nextProps.players, 'name'),
+    };
     this.setState(newState);
   },
   render: function () {
