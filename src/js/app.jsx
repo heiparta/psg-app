@@ -39,11 +39,11 @@ var PlayerStatsRow = React.createClass({
     return (
       <tr>
         <td>{this.props.player.name}</td>
-        <td>{this.props.player.statNumberOfGames}</td>
-        <td>{this.props.player.statNumberOfWins}</td>
+        <td>{this.props.player.stats.games}</td>
+        <td>{this.props.player.stats.wins}</td>
         <td>{numberOfLosses}</td>
-        <td>{this.props.player.statWinPercentage + " %"}</td>
-        <td>{this.props.player.statCurrentStreak}</td>
+        <td>{this.props.player.stats.winPercentage + " %"}</td>
+        <td>{this.props.player.stats.streak}</td>
       </tr>
     );
   }
@@ -149,14 +149,14 @@ var PlayerStreakGraph = React.createClass({
 
 var PlayerListRow = React.createClass({
   render: function() {
-    var numberOfLosses = (this.props.player.statNumberOfGames - this.props.player.statNumberOfWins) || 0;
+    var numberOfLosses = (this.props.player.stats.games - this.props.player.stats.wins) || 0;
     return (
       <tr>
         <th><Link to={"/player/" + this.props.player.name}>{this.props.player.name}</Link></th>
-        <td>{this.props.player.statNumberOfGames}</td>
-        <td>{this.props.player.statNumberOfWins}</td>
+        <td>{this.props.player.stats.games}</td>
+        <td>{this.props.player.stats.wins}</td>
         <td>{numberOfLosses}</td>
-        <td>{this.props.player.statWinPercentage + " %"}</td>
+        <td>{this.props.player.stats.winPercentage + " %"}</td>
       </tr>
     );
   }
@@ -220,7 +220,7 @@ var GameList = React.createClass({
     }
     return (
       <div className="container">
-        <h2>Last 5 games in series</h2>
+        <h2>Last 30 games in series</h2>
         <table className="table">
           <thead>
             <tr>
