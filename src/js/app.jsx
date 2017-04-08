@@ -272,6 +272,7 @@ var GameDragForm = React.createClass({
       goalsHome: "",
       teamAway: "",
       teamHome: "",
+      sendButtonDisabled: false,
     };
   },
   getInitialState: function () {
@@ -360,6 +361,7 @@ var GameDragForm = React.createClass({
       this.setState({error: "Check the game data"});
       return;
     }
+    this.setState({sendButtonDisabled: true});
     $.ajax({
       type: "POST",
       url: window.PSG_API_URL + "/game",
@@ -372,6 +374,7 @@ var GameDragForm = React.createClass({
       }.bind(this),
       error: function (xhr, status, err) {
         console.error(xhr, status, err.toString());
+        this.setState({sendButtonDisabled: false});
       }.bind(this),
     });
   },
@@ -429,7 +432,7 @@ var GameDragForm = React.createClass({
             <span className="text-warning">{this.state.error}</span>
             <div className="form-group text-center">
               <button type="button" onClick={this.closeModal} className="btn btn-link">Cancel</button>
-              <button type="submit" className="btn btn-primary">Save</button>
+              <button type="submit" disabled={this.state.sendButtonDisabled} className="btn btn-primary">Save</button>
             </div>
           </form>
         </Modal>
