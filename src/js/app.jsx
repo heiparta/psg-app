@@ -479,8 +479,8 @@ var Series = React.createClass({
         <h2>{this.state.name}</h2>
         <SeriesStatsChooser tabs={this.state.tabs} activeTabId={this.state.activeTabId} onTabClick={this.onTabClick} />
         <PlayerList players={this.state.players} />
-        <GameList games={this.state.games} />
         { auth.loggedIn() ? <GameDragForm onGameChange={this.refreshStats} series={this.state.key} players={this.state.players} /> : null }
+        <GameList games={this.state.games} />
       </div>
     );
   }
