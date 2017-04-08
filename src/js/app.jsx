@@ -7,8 +7,6 @@ import * as ReactDOM from "react-dom";
 import Modal from "react-modal";
 
 import dragula from 'react-dragula';
-import Plotly from 'plotly.js/dist/plotly-basic.min.js';
-import createPlotlyComponent from 'react-plotlyjs';
 
 import createBrowserHistory from 'history/lib/createBrowserHistory';
 import { HashRouter as Router, Route, Link } from 'react-router-dom';
@@ -100,53 +98,6 @@ var Player = React.createClass({
   }
 });
 
-var PlayerStreakGraph = React.createClass({
-  render: function() {
-    var sortedPlayers = _.sortBy(this.props.players, 'statCurrentStreak');
-    var data = [
-      {
-        type: "bar",
-        y: _.map(sortedPlayers, function (p) {
-          return p.statCurrentStreak < 0 ? p.name : undefined;
-        }),
-        x: _.map(sortedPlayers, function (p) {
-          return p.statCurrentStreak < 0 ? p.statCurrentStreak : undefined;
-        }),
-        name: "Losing streak",
-        orientation: "h",
-        marker: {
-          color: "rgb(240, 20, 20)",
-        },
-      },
-      {
-        type: "bar",
-        y: _.map(sortedPlayers, function (p) {
-          return p.statCurrentStreak >= 0 ? p.name : undefined;
-        }),
-        x: _.map(sortedPlayers, function (p) {
-          return p.statCurrentStreak >= 0 ? p.statCurrentStreak : undefined;
-        }),
-        name: "Winning streak",
-        orientation: "h",
-        marker: {
-          color: "rgb(20, 240, 20)",
-        },
-      },
-    ];
-    var layout = {
-      showlegend: false,
-    };
-    var config = {
-      showLink: false,
-      displayModeBar: false,
-    };
-    const PlotlyComponent = createPlotlyComponent(Plotly);
-    return (
-      <PlotlyComponent className="streakGraph" data={data} layout={layout} config={config} />
-    );
-  }
-});
-
 var PlayerListRow = React.createClass({
   render: function() {
     var numberOfLosses = (this.props.player.stats.games - this.props.player.stats.wins) || 0;
@@ -156,6 +107,7 @@ var PlayerListRow = React.createClass({
         <td>{this.props.player.stats.games}</td>
         <td>{this.props.player.stats.wins}</td>
         <td>{numberOfLosses}</td>
+        <td>{this.props.player.stats.streak}</td>
         <td>{this.props.player.stats.winPercentage + " %"}</td>
       </tr>
     );
@@ -178,6 +130,7 @@ var PlayerList = React.createClass({
               <th>Games</th>
               <th>Wins</th>
               <th>Losses</th>
+              <th>Streak</th>
               <th>Winning percentage</th>
             </tr>
           </thead>
