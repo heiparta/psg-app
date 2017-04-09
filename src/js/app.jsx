@@ -401,7 +401,7 @@ var SeriesStatsChooser = React.createClass({
   render: function () {
     var self = this;
     var tabs = this.props.tabs.map(function (item) {
-      return <li key={item.key} className={self.props.activeTabId === item.key ? 'active' : ''}><a href="#" onClick={self.handleTabClick.bind(self, item.key)}>{item.name}</a></li>;
+      return <li key={item.key} className={self.props.activeTabId === item.key ? 'active' : ''}><a href={"#" + self.props.location.pathname} onClick={self.handleTabClick.bind(self, item.key)}>{item.name}</a></li>;
     });
     return (
         <ul className="nav nav-pills">
@@ -419,11 +419,10 @@ var Series = React.createClass({
       players: [],
       games: games,
       tabs: [
-        //{name: "Current month", key:"current"},
+        {name: "Current month", key:"current"},
         {name: "All time", key:"alltime"},
       ],
-      //activeTabId: "current",
-      activeTabId: "alltime",
+      activeTabId: "current",
     };
   },
   onTabClick: function (item) {
@@ -477,7 +476,7 @@ var Series = React.createClass({
     return (
       <div className="container">
         <h2>{this.state.name}</h2>
-        <SeriesStatsChooser tabs={this.state.tabs} activeTabId={this.state.activeTabId} onTabClick={this.onTabClick} />
+        <SeriesStatsChooser location={this.props.location} tabs={this.state.tabs} activeTabId={this.state.activeTabId} onTabClick={this.onTabClick} />
         <PlayerList players={this.state.players} />
         { auth.loggedIn() ? <GameDragForm onGameChange={this.refreshStats} series={this.state.key} players={this.state.players} /> : null }
         <GameList games={this.state.games} />
