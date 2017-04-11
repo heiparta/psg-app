@@ -11,25 +11,34 @@ import { Link } from 'react-router-dom'
 var Auth = function () {
 };
 
+util.inherits(Auth, EventEmitter);
+
 Auth.prototype.getToken = function () {
-  return localStorage.token;
+  return localStorage.getItem('token');
 };
 
-util.inherits(Auth, EventEmitter);
+Auth.prototype.getName = function () {
+  return localStorage.getItem('name');
+};
 
 Auth.prototype.setToken = function (token, user) {
   if (!token) {
     // LocalStorage stores values as strings and we don't want to store stringified "undefined"
     token = '';
   }
-  localStorage.token = token;
-  this.username = user;
-  this.emit('loginEvent', localStorage.token ? true : false);
+  localStorage.setItem('token', token);
+  if (user) {
+    localStorage.setItem('username', user.username);
+    localStorage.setItem('name', user.name);
+  } else {
+    localStorage.setItem('username', "");
+    localStorage.setItem('name', "");
+  }
+  this.emit('loginEvent', localStorage.getItem('token') ? true : false);
 };
 
 Auth.prototype.loggedIn = function () {
-  //return localStorage.token ? true : false;
-  return true;
+  return Boolean(localStorage.getItem('token'));
 };
 
 export var auth = new Auth();
@@ -45,26 +54,27 @@ export var Logout = React.createClass({
 
 var Logged = React.createClass({
   render: function() {
-    return <p>Logged in as {auth.username} <Link to="/logout">Log out</Link></p>
+    var name = auth.getName();
+    return <p>Logged in as {name} <Link to="/logout">Log out</Link></p>
   }
 });
 
 var LoginForm = React.createClass({
   getInitialState: function () {
-    return {username: '', password: '', error: ''}
+    return {username: '', password: '', error: ''};
   },
   login: function (event) {
     event.preventDefault();
     $.ajax({
       type: "POST",
-      url: PSG_API_URL + "/player/token",
+      url: PSG_API_URL + "/login",
       crossDomain: true,
-      data: {name: this.state.username, password: this.state.password},
+      data: JSON.stringify({username: this.state.username, password: this.state.password}),
       dataType: 'json',
       cache: false,
       success: function (data) {
         this.setState({ username: '', password: '' });
-        auth.setToken(data.token, data.user);
+        auth.setToken(data.data.token, data.data.user);
       }.bind(this),
       error: function (xhr, status, err) {
         console.error(xhr, status, err.toString());
