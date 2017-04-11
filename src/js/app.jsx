@@ -310,6 +310,11 @@ var GameDragForm = React.createClass({
       playersAway: _.map(this.state.playersAway, function (p) { return mapPlayerNameToKey(p, self.props.players);}),
       series: this.props.series,
     };
+    var token = auth.getToken();
+    if (!token) {
+      this.setState({error: "You are not logged in"});
+      return;
+    }
     if (_.some(data, _.isEmpty) || data.goalsHome === data.goalsAway) {
       this.setState({error: "Check the game data"});
       return;
@@ -321,6 +326,7 @@ var GameDragForm = React.createClass({
       data: JSON.stringify(data),
       dataType: 'json',
       contentType: 'application/json',
+      headers: {authorization: "Bearer " + token},
       success: function (data) {
         this.closeModal();
         this.props.onGameChange();
