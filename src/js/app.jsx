@@ -415,6 +415,7 @@ var Series = React.createClass({
   getInitialState: function () {
     var games = [];
     return {
+      isMounted: false,
       name: "",
       players: [],
       games: games,
@@ -443,7 +444,9 @@ var Series = React.createClass({
       dataType: 'json',
       cache: false,
       success: function (data) {
-        this.setState({ key: data.data.key, name: data.data.name, players: data.data.players });
+        if (this.state.isMounted) {
+          this.setState({ key: data.data.key, name: data.data.name, players: data.data.players });
+        }
       }.bind(this),
       error: function (xhr, status, err) {
         console.error(xhr, status, err.toString());
@@ -462,7 +465,9 @@ var Series = React.createClass({
       dataType: 'json',
       cache: false,
       success: function (data) {
-        this.setState({ games: data.data });
+        if (this.state.isMounted) {
+          this.setState({ games: data.data });
+        }
       }.bind(this),
       error: function (xhr, status, err) {
         console.error(xhr, status, err.toString());
@@ -471,6 +476,10 @@ var Series = React.createClass({
   },
   componentDidMount: function () {
     this.refreshStats();
+    this.setState({isMounted: true});
+  },
+  componentWillUnmount: function () {
+    this.setState({isMounted: false});
   },
   render: function() {
     return (
