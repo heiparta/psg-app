@@ -543,11 +543,10 @@ var App = React.createClass({
   render() {
     return (
       <div>
-      <Login />
-      <h1>PSG stats</h1>
-      <SeriesList series={this.state.series} />
+        <h1>PSG stats</h1>
+        <SeriesList series={this.state.series} />
 
-      {this.props.children}
+        {this.props.children}
       </div>
     );
   }
@@ -556,6 +555,7 @@ var App = React.createClass({
 ReactDOM.render((
   <Router>
     <div>
+      <Login />
       <Route exact path="/" component={App}/>
       <Route path="/logout" component={Logout} />
       <Route path="/series/:name" component={Series} />
